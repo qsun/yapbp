@@ -101,15 +101,32 @@ class TestOfBibParser extends UnitTestCase
                                                array('c' => '{Bib}\\TeX'),
                                                array('d' => '{\\textsc{Bib}\\TeX}}ing'),
                                                array('publisher' => 'nobody'),
-                                               array('year' => 2005))));
+                                               array('year' => '2005'))));
 
     }
 
     function testParseBibTexFile() 
     {
         $content = file_get_contents('tests/bib-2');
-        BibParser::parseBibTexString($content);
-        
-        var_dump($result);
+        $a = BibParser::parseBibTexString($content);
+
+        $b = BibParser::parseBibTexFile('tests/bib-2');
+        $this->assertEqual($a, $b);
+        $this->assertEqual($a, array(
+                               array(
+                                   'name' => 'string',
+                                   'body' => array(array('btx' => '{\textsc{Bib}\TeX}}'),
+                                                   array('bty' => '123'))),
+                               array(
+                                   'name' => 'article',
+                                   'body' => array('mrx05',
+                                                   array('author' => 'Mr. X'),
+                                                   array('title' => 'Something Great'),
+                                                   array('a' => '{Bib}\\TeX'),
+                                                   array('b' => '{Bib}\\TeX'),
+                                                   array('c' => '{Bib}\\TeX'),
+                                                   array('d' => '{\\textsc{Bib}\\TeX}}ing'),
+                                                   array('publisher' => 'nobody'),
+                                                   array('year' => '2005')))));
     }
 }

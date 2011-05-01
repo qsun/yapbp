@@ -346,7 +346,7 @@ class BibParser
     {
         $content = file_get_contents($filename);
         
-        BibParser::parseBibTexFile($content);
+        return BibParser::parseBibTexString($content);
     }
     
 }
