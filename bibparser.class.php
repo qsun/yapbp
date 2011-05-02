@@ -90,7 +90,7 @@ class ParseContext
     {
         $result = array();
         
-        for ($i == 0; $i < $num; $i++) {
+        for ($i = 0; $i < $num; $i++) {
             $buffer = '';
             
             while (list($c) = $this->readChar()) {
@@ -257,6 +257,7 @@ class ParseContext
             $value = false;
         } else if ($c != '{' && $c != ',') {
             $this->exception('Invalid tag: ' . $name. " ");
+            $value = false;
         } else {
             $this->unreadChar();
             $value = false;
