@@ -208,7 +208,7 @@ class ParseContext
             } else if (stripos(' abcdefghijklmnopqrstuvwxyz01234567890', $c)) {
                 $s = $c . $this->parsePlainString();
                 
-                if ($this->strings[$s]) {
+                if (isset($this->strings[$s])) {
                     $s = $this->strings[$s];
                 }
             }
