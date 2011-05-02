@@ -1,0 +1,45 @@
+@String{hdr =    "Proc.\ of"}
+
+@String{anlp =   "ANLP-"}
+
+@String{aaai =   "AAAI-"}
+
+@String{acl =    "ACL-"}
+
+@String{coling = "COLING-"}
+
+@String{cogsci = "CogSci-"}
+
+@String{eacl =   "EACL-"}
+
+@String{ecai =   "ECAI-"}
+
+@String{ecoop =  "ECOOP-"}
+
+@String{flairs = "FLAIRS-"}
+
+@String{ijcai =  "IJCAI-"}
+
+@String{iwpt =   "IWPT-"}
+
+@String{nemlap = "NeMLaP-"}
+
+@String{oopsla = "OOPSLA-"}
+
+@String{tag =    "TAG+"}
+
+@String{twlt =   "TWLT"}
+
+@Misc{AAAAAAAAAAAAA_this_is_a_dummy,
+  author =       "Nobody",
+  year =         "1996",
+}
+
+@InProceedings{abney+cole86,
+  author =       "Steven Abney and Jennifer Cole",
+  title =        "A government-binding parser",
+  crossref =     "zzznels-86",
+  pages =        "1--17",
+  keywords =     "actor model, government-binding grammar, parser;",
+}
+

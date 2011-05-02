@@ -5,6 +5,14 @@ require_once('bibparser.class.php');
 
 class TestOfBibParser extends UnitTestCase 
 {
+    function testRow() 
+    {
+        $c = new ParseContext;
+        
+        $c->parseString(file_get_contents('tests/bib-5'));
+        $this->assertEqual($c->currentLine, 3);
+    }
+
     function testReadChar() 
     {
         $context = new ParseContext;
@@ -33,6 +41,18 @@ class TestOfBibParser extends UnitTestCase
         $this->assertEqual($context->currentLine, 0);
         $this->assertEqual($context->currentCol, 0);
     }
+
+    function testReadComment() 
+    {
+        $c = new ParseContext;
+        $c->bibtex = file_get_contents('tests/bib-4');
+        $c->nop();
+        $c->nop();
+        $c->nop();
+        list($ch) = $c->readChar();
+        $this->assertFalse($ch);
+    }
+    
 
     function testNop() 
     {
@@ -128,5 +148,15 @@ class TestOfBibParser extends UnitTestCase
                                                    array('d' => '{\\textsc{Bib}\\TeX}}ing'),
                                                    array('publisher' => 'nobody'),
                                                    array('year' => '2005')))));
+
+        $c = BibParser::parseBibTexFile('tests/bib-3');
     }
+
+    function testRegressionTests() 
+    {
+        $this->assertTrue(BibParser::parseBibTexFile('tests/regression/01.bib'));
+        $this->assertTrue(BibParser::parseBibTexFile('tests/regression/02.bib'));
+        var_dump(BibParser::parseBibTexFile('tests/regression/02.bib'));
+    }
+
 }

@@ -28,6 +28,8 @@ class ParseContext
     var $bypassChars = array("\n", "\t", " ");
     var $result;
 
+    var $debug = false;
+
     function ParseContext() 
     {
         $this->reset();
@@ -57,7 +59,7 @@ class ParseContext
             }
 
             $char = $this->bibtex[$this->pointer];
-            if ($char == "\n") {
+            if ($char === "\n") {
                 $this->currentLine++;
                 $this->currentCol = 0;
             } else {
@@ -76,8 +78,9 @@ class ParseContext
     function unreadChar($num = 1) 
     {
         $this->currentCol--;
-        if ($this->bibtex[$this->pointer] == "\n") {
+        if ($this->bibtex[$this->pointer - 1] === "\n") {
             $this->currentLine--;
+            $this->currentCol = 0;
         }
         
         $this->pointer = $this->pointer - $num;
@@ -109,7 +112,7 @@ class ParseContext
         while (list($char) = $this->readChar()) {
             
             if (in_array($char, $this->bypassChars)) {
-            } else if ($strict != true && $char == '#') {
+            } else if ($strict != true && ($char == '#' || $char == '%')) {
                 $this->readLine();
             } else {
                 $this->unreadChar();
@@ -118,7 +121,7 @@ class ParseContext
         }
     }
 
-    function parsePlainString($allowed = 'abcdefghijklmnopqrstuvwxyz01234567890-_') {
+    function parsePlainString($allowed = 'abcdefghijklmnopqrstuvwxyz01234567890-_+') {
         $buffer = '';
         while (list($c) = $this->readChar()) {
             if (false === stripos($allowed, $c)) {
@@ -146,8 +149,19 @@ class ParseContext
 
     function readTagName() 
     {
-        $tagname = $this->parsePlainString();
-        return strtolower($tagname);
+        list($c) = $this->readChar();
+        if ($c == '"') {
+            $tagName = $this->readString('"');
+        } else if ($c == "'") {
+            $tagName = $this->readString("'");
+        } else  if ($c == '{') {
+            $tagName = $this->readString('}');
+        } else {
+            $this->unreadChar();
+            $tagName = $this->parsePlainString();
+        }
+
+        return strtolower($tagName);
     }
 
     /* keep reading, until find the char, return the buffer */
@@ -227,6 +241,7 @@ class ParseContext
         
         $this->nop();
         $name = $this->readTagName();
+        
         $this->nop();
 
         if (!$name) {
@@ -237,13 +252,14 @@ class ParseContext
         
         if ($c == '=') {
             $value = $this->readTagValue();
+        } else if ($c == '}') {
+            $this->unreadChar();
+            $value = false;
+        } else if ($c != '{' && $c != ',') {
+            $this->exception('Invalid tag: ' . $name. " ");
         } else {
-            if ($c != '{' && $c != ',') {
-                $this->exception('Invalid tag: ' . $name. " ");
-            } else {
-                $this->unreadChar();
-                $value = false;
-            }
+            $this->unreadChar();
+            $value = false;
         }
         
         if ($value === false) {
@@ -312,7 +328,10 @@ class ParseContext
 
     function exception($msg) 
     {
-        throw new ParseException($this, $msg);
+        if ($this->debug) {
+            throw new ParseException($this, $msg);
+        } else {
+        }
     }
     
     function parseString($string) 
